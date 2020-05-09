@@ -2,23 +2,18 @@ import React, { useContext } from "react";
 import { BooksContext } from "../contexts/BooksProvider";
 
 const BooksRead = () => {
-  const { books, setBooks, booksRead, setBooksRead } = useContext(BooksContext);
-
-  const removeFromRead = (book) => {
-    setBooks([...books, book]);
-    setBooksRead(booksRead.filter((readBook) => book !== readBook));
-  };
+  const { booksRead, remove } = useContext(BooksContext);
 
   const renderBooks = () => {
     return (
       <div>
-        {booksRead.map((book) => {
-          const { name, id } = book;
+        {booksRead.map((book, id) => {
+          const { title } = book;
           return (
-            <div key={`${id}-${name}`}>
+            <div key={`${id}-${title}`}>
               <p>{id}</p>
-              <p>{name}</p>
-              <button onClick={() => removeFromRead(book)}>-</button>
+              <p>{title}</p>
+              <button onClick={remove(book)}>-</button>
             </div>
           );
         })}

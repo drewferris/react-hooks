@@ -1,21 +1,40 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useState, useReducer } from "react";
+import { bookReducer, READ, REMOVE, ADD, GET } from "../reducers/BookReducer";
 
 export const BooksContext = createContext();
 
 export const BooksProvider = (props) => {
-  const [books, setBooks] = useState([
-    { id: 1, name: "War and Peace" },
-    { id: 2, name: "Crime and Punishment" },
-    { id: 3, name: "Notes from the Underground" },
-  ]);
+  const defaultState = {
+    books: [],
+    booksRead: [],
+  };
+  const [state, dispatch] = useReducer(bookReducer, defaultState);
 
-  const [booksRead, setBooksRead] = useState([]);
+  const read = (book) => () => {
+    dispatch({ type: READ, book });
+  };
+
+  const remove = (book) => () => {
+    dispatch({ type: REMOVE, book });
+  };
+
+  const add = (book) => {
+    dispatch({ type: ADD, book });
+  };
+
+  const get = (books) => {
+    dispatch({ type: GET, books });
+  };
+
+  const { books, booksRead } = state;
 
   const providerValue = {
     books,
-    setBooks,
     booksRead,
-    setBooksRead,
+    read,
+    remove,
+    add,
+    get,
   };
 
   return (

@@ -1,28 +1,29 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { BooksContext } from "../contexts/BooksProvider";
 
 const BooksList = () => {
-  const { books, setBooks, booksRead, setBooksRead } = useContext(BooksContext);
+  const { books, read, get } = useContext(BooksContext);
 
-  const read = (book) => {
-    setBooksRead([...booksRead, book]);
-    setBooks(removeBookFromList(book));
-  };
+  useEffect(() => {
+    const fetchBooks = async () => {
+      const response = await fetch("https://drewferris.dev/api/reading");
+      const data = await response.json();
+      get(data);
+    };
 
-  const removeBookFromList = (removedBook) => {
-    return books.filter((book) => book !== removedBook);
-  };
+    fetchBooks();
+  }, [get]);
 
   const renderBooks = () => {
     return (
       <div>
-        {books.map((book) => {
-          const { name, id } = book;
+        {books.map((book, id) => {
+          const { title } = book;
           return (
-            <div key={`${id}-${name}`}>
+            <div key={`${id}-${title}`}>
               <p>{id}</p>
-              <p>{name}</p>
-              <button onClick={() => read(book)}>+</button>
+              <p>{title}</p>
+              <button onClick={read(book)}>+</button>
             </div>
           );
         })}
